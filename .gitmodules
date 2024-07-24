@@ -1,0 +1,6 @@
+[submodule "src/che_data_to_pd_code"]
+	path = src/che_data_to_pd_code
+	url = git@github.com:TopologicalKnotIndexer/che_data_to_pd_code.git
+[submodule "src/khovanov-indexer"]
+	path = src/khovanov-indexer
+	url = https://github.com/TopologicalKnotIndexer/khovanov-indexer
