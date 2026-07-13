@@ -1,0 +1,4 @@
+# BEGIN VENDORED DEPENDENCY BYTE-PRESERVATION
+# Keep vendored files byte-for-byte identical to their pinned Git objects.
+/src/knotname-reg/** -text
+# END VENDORED DEPENDENCY BYTE-PRESERVATION

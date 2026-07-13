@@ -1,21 +1,46 @@
-# 桥接：https://github.com/TopologicalKnotIndexer/che_data_to_pd_code
-import os
-DIRNOW = os.path.dirname(os.path.abspath(__file__))
-SUBDIR = os.path.join(DIRNOW, "che_data_to_pd_code", "src") # 子包路径
+"""Run the bundled molecular-data converter as a local program."""
 
-# ======================================== BEGIN IMPORT FROM PATH ======================================== #
-import importlib
-import json
+from ast import literal_eval
+from pathlib import Path
+import subprocess
 import sys
-def load_module_from_path(path: str, mod_name: str): # 从指定路径导入一个包
-    assert os.path.isdir(path)                       # 路径必须存在
-    path         = os.path.abspath(path)             # 获得绝对路径
-    old_sys_path = json.loads(json.dumps(sys.path))  # 存档旧的 sys.path
-    sys.path     = [path] + sys.path                 # 将新的路径加入 sys.path
-    mod          = importlib.import_module(mod_name) # 加载指定的包
-    sys.path     = old_sys_path                      # 恢复旧的 sys.path
-    return mod
-# ======================================== END IMPORT FROM PATH ======================================== #
 
-def from_file_to_pd_code(filename: str):
-    return load_module_from_path(SUBDIR, "che_data_to_pd_code").che_data_to_pd_code(filename)
+
+SOURCE_DIR = Path(__file__).resolve().parent
+CONVERTER_MAIN = SOURCE_DIR / "che_data_to_pd_code" / "src" / "che_data_to_pd_code.py"
+
+
+def from_file_to_pd_code(filename: str, *, timeout: float = 120.0) -> list[list[int]]:
+    """Convert a LAMMPS molecular data file to a validated PD-code list."""
+
+    path = Path(filename)
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    if not CONVERTER_MAIN.is_file():
+        raise FileNotFoundError(CONVERTER_MAIN)
+    if timeout <= 0:
+        raise ValueError("timeout must be positive")
+    completed = subprocess.run(
+        [sys.executable, str(CONVERTER_MAIN), str(path)],
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+        timeout=timeout,
+        check=False,
+    )
+    if completed.returncode != 0:
+        detail = completed.stderr.strip() or completed.stdout.strip()
+        raise RuntimeError(
+            f"bundled molecular converter failed with exit code {completed.returncode}: "
+            f"{detail or 'no diagnostic output'}"
+        )
+    try:
+        pd_code = literal_eval(completed.stdout.strip())
+    except (SyntaxError, ValueError) as exc:
+        raise RuntimeError(
+            f"bundled molecular converter returned invalid output: {completed.stdout!r}"
+        ) from exc
+    if not isinstance(pd_code, list):
+        raise RuntimeError("bundled molecular converter did not return a PD-code list")
+    return pd_code

@@ -1,14 +1,40 @@
-# 从命令行参数获取一个参数作为输入文件名
-# 输出预测到的扭结类型到标准输出
-import sys
+"""Command-line interface for khovanov-indexer-pipeline."""
+
+import argparse
+import subprocess
+
 from khovanov_indexer_pipeline import khovanov_indexer_pipeline
 
-def main():
-    assert len(sys.argv) == 2
-    filename = sys.argv[1]
-    for knotname in khovanov_indexer_pipeline(filename):
-        print(knotname)
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="Identify a closed molecular chain through Khovanov homology."
+    )
+    parser.add_argument("file", help="LAMMPS molecular data file")
+    parser.add_argument("--java", help="path or command name for Java")
+    parser.add_argument("--projection-timeout", type=float, default=120.0)
+    parser.add_argument("--index-timeout", type=float, default=120.0)
+    parser.add_argument("--max-heap", default="16g")
+    args = parser.parse_args(argv)
+    try:
+        for name in khovanov_indexer_pipeline(
+            args.file,
+            java_path=args.java,
+            projection_timeout=args.projection_timeout,
+            index_timeout=args.index_timeout,
+            max_heap=args.max_heap,
+        ):
+            print(name)
+    except (
+        FileNotFoundError,
+        subprocess.TimeoutExpired,
+        TypeError,
+        ValueError,
+        RuntimeError,
+    ) as exc:
+        parser.exit(2, f"error: {exc}\n")
+    return 0
+
 
 if __name__ == "__main__":
-    main()
-    
+    raise SystemExit(main())

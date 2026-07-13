@@ -1,0 +1,5 @@
+# BEGIN VENDORED DEPENDENCY BYTE-PRESERVATION
+# Keep vendored files byte-for-byte identical to their pinned Git objects.
+/src/pd_code_de_r1_k8/** -text
+/src/pd_code_input_sanity/** -text
+# END VENDORED DEPENDENCY BYTE-PRESERVATION

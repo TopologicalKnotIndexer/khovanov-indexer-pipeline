@@ -1,0 +1,13 @@
+# BEGIN VENDORED DEPENDENCY BYTE-PRESERVATION
+# Keep vendored files byte-for-byte identical to their pinned Git objects.
+/src/che_data_to_pd_code/** -text
+/src/che_data_to_pd_code/src/che_data_to_spatial_coord/** -text
+/src/che_data_to_pd_code/src/spatial_coord_to_pd_code/** -text
+/src/khovanov-indexer/** -text
+/src/khovanov-indexer/src/khovanov-solver/** -text
+/src/khovanov-indexer/src/khovanov-solver/src/pd_code_de_r1_k8/** -text
+/src/khovanov-indexer/src/khovanov-solver/src/pd_code_input_sanity/** -text
+/src/khovanov-indexer/src/khovanov-homology-list/** -text
+/src/khovanov-indexer/src/slow_dict_reader/** -text
+/src/khovanov-indexer/src/slow_dict_reader/src/knotname-reg/** -text
+# END VENDORED DEPENDENCY BYTE-PRESERVATION
