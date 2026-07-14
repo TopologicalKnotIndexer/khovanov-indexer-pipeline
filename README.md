@@ -65,3 +65,16 @@ python -m unittest discover -s tests -v
 
 The end-to-end regression uses a three-atom cycle whose zero-crossing result is
 the unknot. No Python packages are installed or published by maintenance.
+
+## Citation
+
+If you use this repository in academic work, please cite it as:
+
+```bibtex
+@software{topologicalknotindexer_khovanov_indexer_pipeline,
+  author = {{TopologicalKnotIndexer contributors}},
+  title = {{khovanov-indexer-pipeline}},
+  year = {2026},
+  url = {https://github.com/TopologicalKnotIndexer/khovanov-indexer-pipeline}
+}
+```
